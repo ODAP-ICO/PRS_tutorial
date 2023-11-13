@@ -42,18 +42,18 @@ To carry out this PRS analysis it is necessary two types of data. Here is the li
   - **SNPs DATA**. 
     List of SNPs associated with a characteristic of interest. This tutorial will use a list of 205 SNPs associated with colon cancer (CRC) from the article: [Deciphering colorectal cancer genetics through multi-omic analysis of 100,204 cases and 154,587 controls of European and east Asian ancestries](https://www.nature.com/articles/s41588-022-01222-9)
     
-   You can download it directly here: [**Download - 1_CRC_SNPs_list_205_Nature_2023**](https://github.com/nmoragas/PRS_tutorial/tree/main/resources)
+   You can download it directly here: [**Download - 1_CRC_SNPs_list_205_Nature_2023**](./resources)
   
     
 <br>
 
   - **TARGET DATA**. 
-  Imputed genotyping data from a population of interest. Simulated data based on GenRisk data will be used here. For reasons of space, only the data of the patients with the SNPs associated with CRC can be downloaded (document obtained in STEP 1) [**Download - GenRisk_all_CRC_SNPs_perm.vcf **](https://github.com/nmoragas/PRS_tutorial/tree/main/resources).
+  Imputed genotyping data from a population of interest. Simulated data based on GenRisk data will be used here. For reasons of space, only the data of the patients with the SNPs associated with CRC can be downloaded (document obtained in STEP 1) [**Download - GenRisk_all_CRC_SNPs_perm.vcf **](./resources).
   
   To be used from the section [Step 1 - SNP extraction. 2 VCF files concatenation](#vcf_conca)
   
   - **METADATA**.
-  Phenotypic data of the target data. In this case which of the samples is controlled and which CRC. [Metadata_GenRIsk - ](https://github.com/nmoragas/PRS_tutorial/tree/main/resources)
+  Phenotypic data of the target data. In this case which of the samples is controlled and which CRC. [Metadata_GenRIsk - ](./resources)
 
 
 <div class="alert alert-danger">
