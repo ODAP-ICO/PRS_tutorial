@@ -80,8 +80,28 @@ To carry out this PRS analysis it is necessary two types of data. Here is the li
 **Attention**: Whether you wish to utilize your own data or existing datasets, it's important to note that the data used should have already undergone a minimum quality control (QC) process, with hg37 as the reference genome. For the target data, it has been imputed using the 1000 Genomes reference.
 
 For more information regarding the format of the data to be used or how to adapt see [here](#step0)
-
 </div>
+
+## Info
+
+This tutorial requires R and a linux terminal or Rstudio, that includes a terminal.
+If you use the RStudio terminal, take care to change to the directory were the tutorial resides.
+
+You can clone our github repository to reproduce this practical (except STEP 1, that requires real imputed genotype data)
+
+
+<div class="console_bash"> LINUX Terminal
+```{bash eval = FALSE} 
+# clone the github repository
+
+git clone https://github.com/odap-ico/PRS_tutorial
+cd PRS_tutorial
+
+```
+</div>
+
+
+
 
 # What’s a Polygenic Risk Score
 
