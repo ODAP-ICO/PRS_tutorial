@@ -1,0 +1,11 @@
+figures
+PRS_tutorial.Rmd
+style.css
+data/0_vcf_permu
+data/1_snps_extraction
+data/2_SNPs_alignament_check
+data/3_QC
+data/4_PRS_calculation
+data/5_PRS_results
+data/data_original
+

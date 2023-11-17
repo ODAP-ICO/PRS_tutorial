@@ -40,7 +40,7 @@ The tutorial is divided into two sections, First, a series of basic concepts abo
 <br>    
 - **R** 
 
-### - R Library
+### - R packages
 
 R packages required:
 
@@ -62,18 +62,18 @@ To carry out this PRS analysis it is necessary two types of data. Here is the li
   - **SNPs DATA**. 
     List of SNPs associated with a characteristic of interest. This tutorial will use a list of 205 SNPs associated with colon cancer (CRC) from the article: [Deciphering colorectal cancer genetics through multi-omic analysis of 100,204 cases and 154,587 controls of European and east Asian ancestries](https://www.nature.com/articles/s41588-022-01222-9)
     
-   You can download it directly here: [**Download - 1_CRC_SNPs_list_205_Nature_2023**](https://github.com/nmoragas/PRS_tutorial/tree/main/resources)
+   You can download it directly here: [**Download - 1_CRC_SNPs_list_205_Nature_2023**](https://github.com/odap-ico/PRS_tutorial/tree/main/resources)
   
     
 <br>
 
   - **TARGET DATA**. 
-  Imputed genotyping data from a population of interest. Simulated data based on GenRisk data will be used here. For reasons of space, only the data of the patients with the SNPs associated with CRC can be downloaded (document obtained in STEP 1) [**Download - GenRisk_all_CRC_SNPs_perm.vcf **](https://github.com/nmoragas/PRS_tutorial/tree/main/resources).
+  Imputed genotyping data from a population of interest. Simulated data based on GenRisk data will be used here. For reasons of space, only the data of the patients with the SNPs associated with CRC can be downloaded (document obtained in STEP 1) [**Download - GenRisk_all_CRC_SNPs_perm.vcf **](https://github.com/odap-ico/PRS_tutorial/tree/main/resources).
   
   To be used from the section [Step 1 - SNP extraction. 2 VCF files concatenation](#vcf_conca)
   
   - **METADATA**.
-  Phenotypic data of the target data. In this case which of the samples is controlled and which CRC. [Metadata_GenRIsk - ](https://github.com/nmoragas/PRS_tutorial/tree/main/resources)
+  Phenotypic data of the target data. In this case which of the samples is controlled and which CRC. [Metadata_GenRIsk - ](https://github.com/odap-ico/PRS_tutorial/tree/main/resources)
 
 
 <div class="alert alert-danger">
@@ -282,17 +282,12 @@ In this case both the list of SNPs and the target date are in GRCh37.
 
 ### - Load SNPs associated to CCR:
 
-SNPs Data from Ceres Fernandez-Rozadilla et al. Nature 2023, save as: **.data/resources/1_CRC_SNPs_list_205_Nature_2023.xlsx**
+SNPs Data from Ceres Fernandez-Rozadilla et al. Nature 2023, saves as: **.1_CRC_SNPs_list_205_Nature_2023.xlsx** in resources folder.
 
 <div class="console_R"> R
-```{r include=FALSE}
-# set directory
-#setwd("./practical")
-setwd("/mnt/hydra/ubs/shared/users/Nuria/courses/PRS_course_NM/practical")
-```
 ```{r eval=FALSE}
 # load data
-CRC_SNP <- read_excel("data/resources/1_CRC_SNPs_list_205_Nature_2023.xlsx")
+CRC_SNP <- read_excel("data/resources/_CRC_SNPs_list_205_Nature_2023.xlsx")
 
 # The first 5 rows and first 7 columns are shown
 CRC_SNP[c(1:5),c(1:7)]
@@ -330,7 +325,9 @@ knitr::kable(head(SNP_file_CRC))
 ```{r eval=FALSE}
 # two avoid scientific annotation
 SNP_file_CRC$`POS (GRCh37)` <- format(SNP_file_CRC$`POS (GRCh37)`, scientific=FALSE)
-# save .txt
+
+# create folder data/1_snps_extraction/ and save as .txt
+dir.create("data/1_snps_extraction/", recursive=TRUE)
 write.table(SNP_file_CRC, "data/1_snps_extraction/1_SNP_file_CRC.txt", quote = F, col.names = F, row.names = F, qmethod = "double", sep = "\t")
 ```
 </div>
@@ -378,13 +375,15 @@ vcf_dir <-"/mnt/hydra/ubs/shared/users/Nuria/courses/PRS_course_NM/practical/dat
 
 <div class="console_R"> R
 ```{r eval=FALSE}
-# set work directory
-setwd("~/practical")
+# this is specific to each setting
 
-# Determine the directory containing the imputed genotype data.
-data_dir <-"~/IMPUTATION/1000G/data/" 
-vcf_dir <- "~/data/1_snps_extraction" 
- 
+# set the directory containing the imputed genotype data.
+data_dir <-Sys.getenv("IMPUTATION_1000G_data") 
+
+# create director for SNP extraction
+vcf_dir <- "data/1_snps_extraction" 
+
+dir.create(vcf_dir) 
 ```
 </div>
 
@@ -393,9 +392,6 @@ vcf_dir <- "~/data/1_snps_extraction"
 
 <div class="console_bash"> LINUX Terminal
 ```{bash eval = FALSE} 
-# Directory selection
-cd /~/practical
-
 # Extraction of the SNPs in a loop for the different chromosomes. 
 
 ## bcftool view <directory/_chr*_vcf.gz> -R <directory/SNP_list.txt> -o <directory/output_file.vcf.gz>
@@ -406,7 +402,7 @@ cd /~/practical
 
 for i in {1..22}
 do
-bcftools view .data_dir/GenRisk_chr${i}.vcf.gz -R data/1_snps_extraction/1_SNP_file_CRC.txt -o data/1_snps_extraction/GenRisk_chr${i}_CRC_SNPs.vcf.gz
+bcftools view data_dir/GenRisk_chr${i}.vcf.gz -R data/1_snps_extraction/1_SNP_file_CRC.txt -o data/1_snps_extraction/GenRisk_chr${i}_CRC_SNPs.vcf.gz
 done
 
 
@@ -446,10 +442,8 @@ This is the list of files to be concatenated that is created:
 <div class="console_bash"> LINUX Terminal
 ```{bash eval=FALSE}
 
-cd /~/practical
-
 # Concatenation:
-bcftools concat -f data/1_snps_extraction/2_chromList.txt -Oz -o data/1_snps_extraction/GenRisk_all_CRC_SNPs_perm.vcf
+bcftools concat -f data/1_snps_extraction/2_chromList.txt -Oz -o data/1_snps_extraction/GenRisk_all_CRC_SNPs_perm.vcf.gz
 
 # time 6s
 ```
@@ -457,7 +451,7 @@ bcftools concat -f data/1_snps_extraction/2_chromList.txt -Oz -o data/1_snps_ext
 
 <br>
 <div class="warning">
-**GenRisk_all_CRC_SNPs_perm.vcf** is the data that can be downloaded and worked from here.
+**GenRisk_all_CRC_SNPs_perm.vcf.gz** is the data that can be downloaded and worked from here.
 </div>
 
 
@@ -503,7 +497,7 @@ Resulting files:
 <div class="console_bash"> LINUX Terminal 
 ```{bash, eval=FALSE}
 
-plink2 --vcf GenRisk_all_CRC_SNPs_perm.vcf \
+plink2 --vcf GenRisk_all_CRC_SNPs_perm.vcf.gz \
 --new-id-max-allele-len 50 \
 --set-all-var-ids @:#_\$r_\$a \
 --freq \
@@ -516,7 +510,7 @@ plink2 --vcf GenRisk_all_CRC_SNPs_perm.vcf \
 
 **Code notes:**
 
-  + --vcf -> input file
+  + --vcf.gz -> input file
   + --new-id-max-allele-len 50 -> set the maximum length for new allele identifiers (IDs) in the output format. By default it is 14 and it may not be enough
   + --set-all-var-ids @:#_\$r_\$a \ -> set SNPs id -> chr:pos_ref_alt
   + --freq -> compute allele frequency and output to .afreq file
@@ -614,7 +608,7 @@ pvar$id_pos <- paste0(pvar$CHR,":",pvar$POS)
 
 
 # SNPs not found
-snpsNOTpvar<-CRC_SNP[!CRC_SNP$id_pos%in%pvar$id_pos  ,]
+snpsNOTpvar<-CRC_SNP[!(CRC_SNP$id_pos %in% pvar$id_pos), ]
 ```
 </div>
 <br>
@@ -714,6 +708,8 @@ knitr::kable(id_multi)
 id_multi_to_remove <- id_multi[,c(1,3:5)]
 ```
 ```{r eval=FALSE}
+dir.create("data/2_SNPs_alignament_check")
+
 write.table(id_multi_to_remove,"data/2_SNPs_alignament_check/multi_to_remove.txt", col.names = F, row.names = F, quote = F)
 ```
 </div>
@@ -748,14 +744,14 @@ All SNPs are then verified to have the correct alleles, using ID = chr:position_
 <div class="console_R"> R
 ```{r}
 ## SNPs that have been extracted: 
-dim(CRC_SNP[CRC_SNP$ID%in%pvar$ID,])
+dim(CRC_SNP[CRC_SNP$ID %in% pvar$ID,])
 ```
 </div>
 <br>
 <div class="console_R"> R
 ```{r eval=FALSE}
 ## SNPs that have not been extracted: 
-no_snps <- CRC_SNP[!CRC_SNP$ID%in%pvar$ID,]
+no_snps <- CRC_SNP[!CRC_SNP$ID %in% pvar$ID,]
 no_snps
 
 ```
@@ -972,14 +968,18 @@ In order to verify this, or apply more stringent thresholds, the PLINK 2 command
 <div class="console_bash"> LINUX Terminal
 ```{bash eval = F }
 # Pruning / clumping to remove highly correlated SNPs:
-cd ./practical
+
+# make folder to save QC results
+mkdir -p data/3_QC
+
+# remove redundant SNPs 
 
 plink2 \
     --pfile data/1_snps_extraction/raw_data \
     --indep-pairwise 200 1 0.3 \
     --out data/3_QC/LD
       
-            ## "200" refers to the distance in kilobases (kb) between the SNPs
+      ## "200" refers to the distance in kilobases (kb) between the SNPs
       ## "1" refers to the maximum number of SNPs that can be included in a clumping group.
       ## "0.3" is the correlation threshold (R^2) used to determine if two SNPs are "clumpable"
 ```
@@ -993,8 +993,8 @@ plink2 \
 
 After applying this formula, two files are generated:
   
-  - LD.prune.out -> Contains SNPs to be removed due to linkage disequilibrium.
-  - LD.prune.in -> Contains SNPs that do not exhibit linkage disequilibrium.
+ - LD.prune.out -> Contains SNPs to be removed due to linkage disequilibrium.
+ - LD.prune.in -> Contains SNPs that do not exhibit linkage disequilibrium.
 
 <br>
 
@@ -1058,10 +1058,10 @@ All SNPs that have not passed QC, as well as ambiguous ones, are saved to a file
 
 In the PRS calculation function, Plink only accepts a list of SNPs to be excluded. Therefore, we need to combine the list of:
 
-  - SNP extracted and not included in the list of interests. `1` SNP, save as multi_to_remove.txt
-  - Ambiguous SNPs. `3` SNPs, save as exclrsIDs_ambiguous.txt
-  - SNPs with low INFO. `2` SNPs, save as r2_04_remove (r object). 
-  - LD SNPs. `2` SNPs, save as ld_snps (r object)
+ - SNP extracted and not included in the list of interests. `1` SNP, save as multi_to_remove.txt
+ - Ambiguous SNPs. `3` SNPs, save as exclrsIDs_ambiguous.txt
+ - SNPs with low INFO. `2` SNPs, save as r2_04_remove (r object). 
+ - LD SNPs. `2` SNPs, save as ld_snps (r object)
   
 This combined list is saved in a file named "to_remove.txt."
 
@@ -1155,8 +1155,6 @@ The next step involves data filtering to exclude SNPs in the **to_remove.txt**. 
 <div class="console_bash"> LINUX Terminal
 ```{bash eval=F}
 
-cd ./practical
-
 #Scrip aplicat:
 plink2 \
 --pfile data/1_snps_extraction/raw_data \
@@ -1189,11 +1187,11 @@ The outputs of the command above are:
    
 From the initial 205, the following have been removed: 
 
-  -1 for being on the X sex chromosome 
-  -3 for ambiguous 
-  -2 for low imputation score 
-  -0 for low MAF
-  -2 (idem INFO) LD
+ -1 for being on the X sex chromosome <br>
+ -3 for ambiguous <br>
+ -2 for low imputation score <br>
+ -0 for low MAF <br>
+ -2 (idem INFO) LD <br>
 
   </details>
 </div>
@@ -1203,16 +1201,17 @@ From the initial 205, the following have been removed:
 
 # STEP 4 - PRS calculation{#step4}
 
-  - 1 Preparació score.txt
-  - 2 PRS calculation
-  - 3 PRS score rescaling
+ - 1 Prepare score.txt
+ - 2 PRS calculation
+ - 3 PRS score rescaling
 
-## 1 Preparació score.txt
+## 1 Prepare score.txt
 
 Creating a file with 3 columns:
-    -ID of the SNPs that have passed the QC
-    -The RISK_ALLELE
-    -Betas
+
+ - ID of the SNPs that have passed the QC
+ - The RISK_ALLELE
+ - Betas
 
 Thus ensuring that the risk allele according to the beta value.
 
@@ -1229,8 +1228,8 @@ The ID in the target data has this structure: chr:position_ref_alt - e.x: 1:1103
 
 In the case of the original SNPs list with beta data (representing the weight of each SNP in the trait under study), the structure is as follows: chr:position_other_risk, where the risk allele is determined by the sign of the beta value. In other words:
 
-  - For SNP 1:22503282_G_C with a positive beta value, the risk allele is C.
-  - For SNP 1:22503282_G_C with a negative beta value, the risk allele is G
+ - For SNP 1:22503282_G_C with a positive beta value, the risk allele is C.
+ - For SNP 1:22503282_G_C with a negative beta value, the risk allele is G
 
 <div class="console_R"> R
 ```{r}
@@ -1384,7 +1383,6 @@ write.table(score,"data/4_PRS_calculation/score_final.txt", col.names = F, quote
 <div class="console_bash"> LINUX Terminal
 ```{bash eval=FALSE}
 #PRS calculation 
-cd ./practical
 
 plink2 \
 --pfile data/1_snps_extraction/raw_data \
