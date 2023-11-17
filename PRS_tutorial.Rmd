@@ -87,7 +87,9 @@ For more information regarding the format of the data to be used or how to adapt
 This tutorial requires R and a linux terminal or Rstudio, that includes a terminal.
 If you use the RStudio terminal, take care to change to the directory were the tutorial resides.
 
-You can clone our github repository to reproduce this practical (except STEP 1, that requires real imputed genotype data)
+You can clone our github repository to reproduce this practical.
+The exception is STEP 1, that requires real imputed genotype data. 
+We canot share real data, but we provide fake data resulting from the pipeline in directort data/resources)
 
 
 <div class="console_bash"> LINUX Terminal
