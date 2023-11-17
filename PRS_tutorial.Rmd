@@ -1370,6 +1370,9 @@ knitr::kable(head(score))
 <div class="console_R"> R
 ```{r eval=FALSE}
 #Save the new score doc as score_final.txt 
+
+dir.create("data/4_PRS_calculation",recursive = TRUE)
+
 write.table(score,"data/4_PRS_calculation/score_final.txt", col.names = F, quote = F, row.names = F)
 
 ```
