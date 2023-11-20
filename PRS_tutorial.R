@@ -8,7 +8,6 @@ setwd("PRS_tutorial")
 
 library(readxl)
 library(data.table)
-library(dplyr)
 library(ggplot2)
 
 # load data
