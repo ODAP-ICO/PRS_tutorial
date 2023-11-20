@@ -6,3 +6,5 @@ The purpose of this tutorial is to furnish a step-by-step guide on the execution
 
 read the tutorial: (https://odap-ico.github.io/PRS_tutorial)
 
+
+This work is licensed under CC BY-NC-SA 4.0 
